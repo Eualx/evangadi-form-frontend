@@ -1,0 +1,195 @@
+.top_container{
+    display: flex;
+    justify-content: space-between;
+    background-color: #FAFAFA;
+    margin-left:200px;
+    margin-right: 200px;
+}
+.top_container button{
+padding: 20px;
+color: white;
+font-size: 15px;
+width: 200px;
+background-color: #2368de;
+border: none;
+border-radius: 6px;
+}
+.one_question{
+    border-top: 2px solid #F1F1F1;
+    display: flex;
+    gap: 30px;
+    background-color:#FAFAFA;
+    margin: 0px 150px;
+    position: relative;  
+    z-index: 10;
+}
+.title{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    color: black;
+    font-size: 20px;  
+    /* position: relative;   */
+}
+.titleinside{
+    /* position: absolute;   */
+    width: auto;
+    font-size: 17px;
+}
+.arrow{
+    position: absolute;
+   border: none; 
+    right: 100px;
+    font-weight: bolder;
+    size: 100px;
+     
+}
+.button{
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+}
+.profile{
+ width: 80px;
+ 
+}
+.username{
+    width: 100px;
+    font-size: 15px;
+    color: black;
+    font-style: italic;
+}
+h3{
+    margin-left:200px;
+}
+.welcome_message{
+    font-size: 12px;
+    text-align: right;
+    margin: 30px;
+
+    
+}
+.greet {
+position:fixed;
+width: 250px;
+background-color: rgba(255,130,0,0.8);
+height: 250px;
+text-align: center;
+font-style: italic;
+right: 200px;
+border-radius: 10px;
+padding: 10px;
+z-index: 11;
+}
+.greet h2{
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+
+.search input{
+    height: 40px;
+    background-color:#FAFAFA; 
+    border-radius: 6px;
+    border: 1px solid #F1F1F1;
+    margin: 10px 0px 10px 100px ;
+    padding-right:300px;
+}
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    background-color: #2368de;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    font-size: 16px;
+    margin: 0 10px;
+  }
+
+
+
+
+
+
+
+@media screen and (max-width:768px){
+    .top_container button{
+    width: 150px;
+    }
+    .one_question{
+        display: flex;
+        gap: 20px;
+    }
+
+    .titleinside{
+     
+        width: auto;
+    }
+    
+    .arrow{
+       
+        right: 30px;
+     
+    }
+    .one_question{
+margin: 0px 20px;
+    }
+    
+    /* .button button {
+        background-color:#E8F0FE;
+        outline: none;
+        width: 100%;
+        margin-left:20px;
+        margin-right: 20px;
+        right: auto;
+          
+    } */
+    .profile{
+     width: 80px;
+    }
+    .username{
+        width: 70px;
+        font-size: 15px;
+        color: black;
+        font-style: italic;
+    }
+    h3{
+        margin-left:20px;
+    }
+    .search input{
+        margin: 10px 0px 10px 100px ;
+    padding-right:200px;
+    }
+    .greet{
+        display: none;
+    }
+    .top_container{
+        display: flex;
+        justify-content: space-between;
+        background-color: #FAFAFA;
+        margin-left:20px;
+        margin-right: 20px;
+    }
+
+}

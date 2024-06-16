@@ -1,0 +1,74 @@
+
+what work left...
+extra work 
+
+
+project scope 
+// the home page doesnt come without refereshing it
+make it that correcti am gonna ask our instructors
+
+
+sunday- 
+
+// form management  ???
+// editing the question,delete  ???
+// like n dislike button and count ??? it the first
+const LikeDislike = ({ values }) => {
+  const initialAnswers = values.map((value, index) => ({
+    ...value,
+    id: index,
+    likeCount: 0,
+    dislikeCount: 0,
+    activeBtn: 'none'
+  }));
+  const [answers, setAnswers] = useState(initialAnswers);
+
+
+const handleReactionClick=(id ,reaction)=>{
+
+  setAnswers(prevAnswers => 
+    prevAnswers.map(answer => {
+      if (answer.id === id) {
+        let newLikeCount = answer.likeCount;
+        let newDislikeCount = answer.dislikeCount;
+        let newActiveBtn = answer.activeBtn;
+
+       if (answer.activeBtn === 'none') {
+  if (reaction === 'like') {
+    newLikeCount++;
+    newActiveBtn = 'like';
+  } else if (reaction === 'dislike') {
+    newDislikeCount++;
+    newActiveBtn = 'dislike';
+  }
+} else if (answer.activeBtn === reaction) {
+  if (reaction === 'like') {
+    newLikeCount--;
+  } else if (reaction === 'dislike') {
+    newDislikeCount--;
+  }
+  newActiveBtn = 'none';
+} else {
+  if (reaction === 'like') {
+    newLikeCount++;
+    newDislikeCount--;
+    newActiveBtn = 'like';
+  } else if (reaction === 'dislike') {
+    newLikeCount--;
+    newDislikeCount++;
+    newActiveBtn = 'dislike';
+  }
+}
+
+return {
+  ...answer,
+  likeCount: newLikeCount,
+  dislikeCount: newDislikeCount,
+  activeBtn: newActiveBtn
+};
+}
+return answer;
+})
+);
+};
+ 
