@@ -66,10 +66,10 @@ useEffect(() => {
 
 
 // pagination
-const handleSearchChange = (e) => {
-  setSearch(e.target.value);
-  setCurrentPage(1); // Reset to first page on search
-};
+// const handleSearchChange = (e) => {
+//   setSearch(e.target.value);
+//   setCurrentPage(1); // Reset to first page on search
+// };
 
  // Pagination calculations
  const indexOfLastItem = currentPage * itemsPerPage;
@@ -84,31 +84,6 @@ const handleSearchChange = (e) => {
  const handlePreviousPage = () => {
    setCurrentPage((prev) => Math.max(prev - 1, 1));
  };
-
- // delete the question
-
-//  const [showConfirm, setShowConfirm] = useState(false);
-//  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
-//  const handleDeleteClick = (questionId) => {
-//   setShowConfirm(true);
-//   setSelectedQuestionId(questionId);
-// };
-
-// const confirmDelete = async (confirm) => {
-//   if (confirm && selectedQuestionId !== null) {
-//     await deleteQuestions(selectedQuestionId);
-//   }
-//   setShowConfirm(false);
-//   setSelectedQuestionId(null);
-// };
-// {showConfirm && (
-//   <div className="confirm-dialog">
-//     <p>Are you sure you want to delete this question?</p>
-//     <button onClick={() => confirmDelete(true)}>Yes</button>
-//     <button onClick={() => confirmDelete(false)}>No</button>
-//   </div>
-// )}
-
 
 
  const deleteQuestions = async (questionid) => {
@@ -127,6 +102,7 @@ const handleSearchChange = (e) => {
     setValues((prevQuestions) =>
       prevQuestions.filter((value) => value.questionid !== questionid)
     );
+    navigate("/")
     setShowConfirm(true);
   } catch (error) {
     console.log(error.response);

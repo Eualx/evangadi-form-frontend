@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useReducer } from "react";
 import classes from "./QuestionAns.module.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
 import { VscAccount } from "react-icons/vsc";
 import Layout from "../Layout/Layout";
 import axios from "../Axios/axiosConfig";
@@ -15,7 +15,10 @@ import Loader from "../../Components/Loader";
 import { useContext } from "react";
 import { AppState } from "../../App";
 import { TbDotsVertical } from "react-icons/tb";
+
+import Confirmation from './Confirmation'
 function QuestionAns() {
+  const navigate=useNavigate()
   const { user } = useContext(AppState);
   const answerDom = useRef();
   const token = localStorage.getItem("token");
@@ -33,8 +36,12 @@ function QuestionAns() {
   const [showAll, setshowAll] = useState(false);
   const [isEditModeQuestion, setIsEditModeQuestion] = useState(false);
   const [questionIdOnEdit, setQuestionIdOnEdit] = useState(null);
-  const [titleValue, setTittleValue] = useState("");
+  const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
+  // const [notification, setNotification] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+  // const [announce, setAnnounce]=useState('')
   const titleDom = useRef();
   const descriptionDom = useRef();
  
@@ -88,26 +95,31 @@ function QuestionAns() {
 
   
   // {extracting data which are not included in the mapping}
-
-  useEffect(() => {
+  async function detailQuestion() {
     setIsLoading(true);
-    axios
+    try {
+      const respond = await axios
       .get(`/data/combineddetail/${questionid}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
-      .then((res) => {
-        setDetail(res.data[0]);
-        console.log(res.data);
+      setDetail(respond.data[0]);
+        console.log(respond.data);
         setIsLoading(false);
-      })
+    } catch (error) {
+      console.log(err);
+        setIsLoading(false);
+    }
+  }
 
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false);
-      });
-  }, []);
+      useEffect(() => {
+        detailQuestion()
+  }, [setDetail]);
+
+  useEffect(() => {
+  
+  }, [details]);
 
   // {to post answers}
   async function handleSubmit(e) {
@@ -268,7 +280,7 @@ const updateQuestion = async (e) => {
     alert("Your question has been updated");
 
     // Reset form
-    setTittleValue("");
+    setTitleValue("");
     setDescriptionValue("");
     setIsLoading(false);
     setIsEditModeQuestion(false);
@@ -284,7 +296,44 @@ const updateQuestion = async (e) => {
 }
 };
 
-
+const confirmDeleteQuestion = (questionid) => {
+  setDeleteQuestionId(questionid);
+  setShowConfirmModal(true);
+};
+const handleConfirmDelete = async () => {
+  setShowConfirmModal(false);
+  if (deleteQuestionId) {
+    await deleteQuestions(deleteQuestionId);
+    setDeleteQuestionId(null);
+  }
+};
+const handleCancelDelete = () => {
+  setShowConfirmModal(false);
+  setDeleteQuestionId(null);
+};
+  
+  const deleteQuestions = async (questionid) => {
+    try {
+           const { data } = await axios.delete(`/questions/delete/${questionid}`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }).then((res)=>{
+            detailQuestion();
+          })
+      console.log(data);
+      // setNotification("You have deleted your question");
+      // setTimeout(() => {
+        setDetail((prevQuestions) =>
+                prevQuestions.filter((details) => details.questionid !== questionid)
+            );
+            navigate("/",{ replace: true });
+      // }, 2000); // Navigate after 2 seconds
+    }  catch (error) {
+      console.log(error.response);
+    }
+  };
+// Other functions (handleSubmit, updateAnswer, editAnswer, etc.) go here...
   return (
     <Layout>
       <Animationpage>
@@ -292,13 +341,22 @@ const updateQuestion = async (e) => {
           <Loader />
         ) : (
           <div className={classes.answer_container}>
+            {showConfirmModal && (
+        <Confirmation 
+          message="Are you sure you want to delete this question?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+  />
+)}
             <div className={classes.title}>
-              <h4>Questions title: {details.title}</h4>
-              <h4>Questions description: {details.description}</h4>
+              <h4>Questions title: {details?.title}</h4>
+              <h4>Questions description: {details?.description}</h4>
               <div onClick={(e) => e.stopPropagation()}>
+             
               {details?.username == user?.username && <div onClick={(e) => e.stopPropagation()}>
-              <FaTrashAlt
-                onClick={() => deleteQuestions(details.questionid,details.title,details.description)}
+              <FaTrashAlt 
+                // onClick={() => deleteQuestions(details.questionid,details.title,details.description)}
+                onClick={() => confirmDeleteQuestion(details.questionid)}
                 style={{ cursor: "pointer", color: "red", fontSize: "20px" }}
               />
                <MdEdit
@@ -325,7 +383,7 @@ const updateQuestion = async (e) => {
             placeholder="Enter title"
             className={classes.input_field}
             value={titleValue}
-            onChange={(e) => setTittleValue(e.target.value)}
+            onChange={(e) => setTitleValue(e.target.value)}
             
           />
           <textarea
@@ -346,10 +404,6 @@ const updateQuestion = async (e) => {
           </button>
         </form>
 )}
-
-
-
-
 
               <h2>
                 <img src={QA} width={45} alt="" />{" "}
@@ -395,7 +449,7 @@ const updateQuestion = async (e) => {
                               className={classes.display}
                             >
                               <FaTrashAlt
-                                onClick={() => deleteAnswer(value.answerid)}
+                               onClick={() => confirmDeleteQuestion(value.answer)}
                                 style={{
                                   cursor: "pointer",
                                   color: "red",
