@@ -8,6 +8,7 @@ import AskQuestion from './pages/AskQuestion/AskQuestion'
 import QuestionAns from './pages/QuestionAns/QuestionAns'
 import Header from './pages/Header/Header'
 import { AnimatePresence } from 'framer-motion'
+import Four04 from './Components/Four04'
 export const AppState=createContext()
  
  
@@ -47,7 +48,7 @@ console.log(user);
   <Route path="/register" element={<Register/>}/>
   <Route path="/all-questions" element={<AskQuestion/>}/>
   <Route path="/:questionid" element={<QuestionAns/>}/>
-  
+  <Route path="*" element={<Four04/>}/>
    </Routes>
   
    </AnimatePresence>

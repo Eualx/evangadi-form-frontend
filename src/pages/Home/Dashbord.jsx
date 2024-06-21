@@ -11,7 +11,7 @@ import userprofile from '../../assets/img/user.png'
 import team from '../../assets/img/team-spirit.png'
 import Animationpage from '../Animation/Animationpage'
 import Loader from '../../Components/Loader'
-
+import { FaTrashAlt } from "react-icons/fa";
 function Dashbord() {
   const {user} =useContext(AppState)
   const token = localStorage.getItem("token")
@@ -20,31 +20,32 @@ const [values, setValues]=useState([])
 const [greeting, setGreeting]=useState(false)
 const [search, setSearch]=useState("")
 const [isloading, setIsLoading]=useState(false)
-// const []
+// const [question, setQuestion] = useState([]);
+
 
  // Pagination state
  const [currentPage, setCurrentPage] = useState(1);
  const itemsPerPage = 5;
 
-useEffect(()=>{
-  setIsLoading(true)
-axios.get('/data/combined',  { headers:{
-  Authorization: 'Bearer ' + token,}
+const AllQuestions = async () => {
+  try {
+    const { data } = await axios.get("/data/combined", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+    console.log(data);
+    setValues(data);
+  } catch (error) {
+    console.log(error.response);
+  }
 }
-)
+useEffect(() => {
+  AllQuestions();
+}, [setValues]);
+useEffect(() => {
 
-  .then((res)=>{
-    setValues(res.data)
-    console.log(res.data);
-    setIsLoading(false)
-  })
-   
-.catch(
-    (err)=>{
-        console.log(err)
-        setIsLoading(false)
-    })
-    },[] )
+}, [values]);
 
   // search 
     const filter= values?.filter((value) => {
@@ -53,6 +54,8 @@ axios.get('/data/combined',  { headers:{
         value.username.toLowerCase().includes(search.toLowerCase())
       );
     });
+
+
 
 
     // to find the answer page
@@ -81,6 +84,56 @@ const handleSearchChange = (e) => {
  const handlePreviousPage = () => {
    setCurrentPage((prev) => Math.max(prev - 1, 1));
  };
+
+ // delete the question
+
+//  const [showConfirm, setShowConfirm] = useState(false);
+//  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+//  const handleDeleteClick = (questionId) => {
+//   setShowConfirm(true);
+//   setSelectedQuestionId(questionId);
+// };
+
+// const confirmDelete = async (confirm) => {
+//   if (confirm && selectedQuestionId !== null) {
+//     await deleteQuestions(selectedQuestionId);
+//   }
+//   setShowConfirm(false);
+//   setSelectedQuestionId(null);
+// };
+// {showConfirm && (
+//   <div className="confirm-dialog">
+//     <p>Are you sure you want to delete this question?</p>
+//     <button onClick={() => confirmDelete(true)}>Yes</button>
+//     <button onClick={() => confirmDelete(false)}>No</button>
+//   </div>
+// )}
+
+
+
+ const deleteQuestions = async (questionid) => {
+  try {
+    const { data } = await axios.delete(`/questions/delete/${questionid}`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then((res)=>{
+      AllQuestions();
+      
+    }).catch((err)=>{
+      console.log("this catch ", err)
+    })
+    console.log(data);
+    setValues((prevQuestions) =>
+      prevQuestions.filter((value) => value.questionid !== questionid)
+    );
+    setShowConfirm(true);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+
 
 
   return (
@@ -122,7 +175,8 @@ const handleSearchChange = (e) => {
     
       </div>
       
-      {currentItems.map((value, i) => (
+
+{currentItems.map((value, i) => (
         <div onClick={()=>Detail(value.questionid)} key={i} className={classes.one_question}>
           <div  className={classes.button}>
 
@@ -138,7 +192,24 @@ const handleSearchChange = (e) => {
             </div>
           </Link> 
           </div>
+          <div>
+
+</div>
+
+
+{value.username == user.username && <div onClick={(e) => e.stopPropagation()}>
+              <FaTrashAlt
+                onClick={() => deleteQuestions(value.questionid)}
+                style={{ cursor: "pointer", color: "red", fontSize: "20px" }}
+              />
+              </div>}
+       
+
+
+          
         </div>
+
+        
       ))}
 
 

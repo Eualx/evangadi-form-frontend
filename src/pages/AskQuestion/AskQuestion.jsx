@@ -6,7 +6,7 @@ import axios from "../Axios/axiosConfig"
 import arrow from  "../../assets/img/icons8-arrow-24.png"
 import Animationpage from "../Animation/Animationpage";
 import Loader from "../../Components/Loader";
-
+import { Link } from "react-router-dom";
 function AskQuestion() {
   const [error , setError]=useState(true)
   const navigate=useNavigate()
@@ -15,9 +15,7 @@ function AskQuestion() {
   const token = localStorage.getItem("token")
   const [isloading, setIsLoading]=useState(false)
   
-  
-  
-  async function handleSubmit(e) {
+async function handleSubmit(e) {
     e.preventDefault();
     const titlevalue=titleDom.current.value;
     const descriptionvalue=descriptionDom.current.value
@@ -57,6 +55,7 @@ if(!titlevalue|| !descriptionvalue){
       <section className={classes.AskQuestion_container}>
         <div className={classes.description}>
           <div className={classes.list_title}><h3>Steps to write a good question</h3></div>
+          
           <div>  <ul>
             <li><img src={arrow} alt="" /><span>Summerize your problem in a one-line title</span></li>
             <li><img src={arrow} alt="" />Describe your problem in more detail</li>
@@ -70,13 +69,14 @@ if(!titlevalue|| !descriptionvalue){
           <form onSubmit={handleSubmit} action="">
             <div className={classes.public}>
               <h3>Ask a public question </h3><br />
+              <div><Link to="/">Go to question page</Link></div>
             </div>
 
             <div className={classes.title}>
-              < input
+              < textarea 
               ref={titleDom}
               type="text" 
-              placeholder="Title" />
+              placeholder="Title" ></textarea>
             </div> <br />
             <div className={classes.Question_Des}>
               {" "}

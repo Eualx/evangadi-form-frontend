@@ -1,5 +1,5 @@
 import React,{useContext, useEffect,useState} from 'react'
-import { Link ,useNavigate } from 'react-router-dom'
+import { Link ,useLocation,useNavigate } from 'react-router-dom'
 import logo from '../../assets/img/10002.png'
 import classes from "./Header.module.css"
 import { AppState } from '../../App'
@@ -8,7 +8,7 @@ function Header() {
   const { user, setUser } = useContext(AppState);
   const [sidebar, setSidebar]=useState(false)
   const navigate = useNavigate();
-
+// const location =useLocation()
 
 
 
@@ -60,6 +60,8 @@ const handleAuthButtonClick = () => {
        <div className={classes.header_button}><button type="button" onClick={handleAuthButtonClick}>
             {user ? 'Log out' : 'Log in'}
           </button></div>
+
+
  
         </div>
         

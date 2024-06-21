@@ -5,55 +5,94 @@ import { VscAccount } from "react-icons/vsc";
 import Layout from "../Layout/Layout";
 import axios from "../Axios/axiosConfig";
 import QA from "../../assets/img/icons8-answer-58.png";
-import handpointer from "../../assets/img/icons8-hand-right-50.png"
+import handpointer from "../../assets/img/icons8-hand-right-50.png";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { SlLike } from "react-icons/sl";
 import { SlDislike } from "react-icons/sl";
 import Animationpage from "../Animation/Animationpage";
-import Loader from "../../Components/Loader"
+import Loader from "../../Components/Loader";
+import { useContext } from "react";
+import { AppState } from "../../App";
+import { TbDotsVertical } from "react-icons/tb";
 function QuestionAns() {
+  const { user } = useContext(AppState);
   const answerDom = useRef();
   const token = localStorage.getItem("token");
   const { questionid } = useParams();
   const [values, setValues] = useState([]);
   const [details, setDetail] = useState([]);
   const [render, forceUpdate] = useReducer((x) => x + 1);
-  const [error, setError]=useState(true)
+  const [error, setError] = useState(true);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
   const [activeBtn, setActiveBtn] = useState("none");
-  const [isloading, setIsLoading]=useState(false)
-
+  const [isloading, setIsLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [answerIdOnEdit, setAnswerIdOnEdit] = useState(null);
+  const [showAll, setshowAll] = useState(false);
+  const [isEditModeQuestion, setIsEditModeQuestion] = useState(false);
+  const [questionIdOnEdit, setQuestionIdOnEdit] = useState(null);
+  const [titleValue, setTittleValue] = useState("");
+  const [descriptionValue, setDescriptionValue] = useState("");
+  const titleDom = useRef();
+  const descriptionDom = useRef();
+ 
   // {to extract answers from data base}
-  useEffect(() => {
-    if (questionid && token) {
-      setIsLoading(true)
-      axios
+ 
+    // if (questionid && token) {
+      // setIsLoading(true);
+      // axios
+      //   .get(`/data/combined/${questionid}`, {
+      //     headers: {
+      //       Authorization: "Bearer " + token,
+      //     },
+      //   })
+
+      //   .then((res) => {
+      //     setValues(res.data);
+      //     console.log(res.data);
+      //     setIsLoading(false);
+      //   })
+
+      //   .catch((err) => {
+      //     console.log(err);
+      //     setIsLoading(false);
+      //   });
+    // }
+    
+
+    async function answer() {
+      try {
+        const respond = await axios
         .get(`/data/combined/${questionid}`, {
           headers: {
             Authorization: "Bearer " + token,
           },
         })
 
-        .then((res) => {
-          setValues(res.data);
-          console.log(res.data);
-          setIsLoading(false)
-        })
-
-        .catch((err) => {
-          console.log(err);
-          setIsLoading(false)
-        });
+        setValues(respond.data);
+    console.log(respond.data);
+    } catch (error) {
+      console.error("Error with question details:", error);
+      if (error.res) {
+        console.error( error.res.data);
+        console.error( error.res.status);
+      }
     }
-  }, [questionid, token, render]);
+  }
 
+  useEffect(() => {
+    answer()
+  }, [isloading, isEditMode, answerIdOnEdit]);
+
+  
   // {extracting data which are not included in the mapping}
 
   useEffect(() => {
-    setIsLoading(true)
-    axios.get(`/data/combineddetail/${questionid}`, {
+    setIsLoading(true);
+    axios
+      .get(`/data/combineddetail/${questionid}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -61,16 +100,15 @@ function QuestionAns() {
       .then((res) => {
         setDetail(res.data[0]);
         console.log(res.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
 
       .catch((err) => {
         console.log(err);
-        setIsLoading(false)
+        setIsLoading(false);
       });
   }, []);
 
- 
   // {to post answers}
   async function handleSubmit(e) {
     e.preventDefault();
@@ -78,12 +116,11 @@ function QuestionAns() {
 
     console.log("Question ID:", questionid);
     if (!answervalue) {
-      // alert("please provide all required information");
-      setError("before you post you have to answer for the given question")
+      setError("before you post you have to answer for the given question");
       return;
     }
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       await axios.post(
         `/answers/all-answer/${questionid}`,
         {
@@ -97,16 +134,17 @@ function QuestionAns() {
         }
       );
       forceUpdate();
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (error) {
       alert("something went wrong");
       console.log(error);
-      
-      setIsLoading(false)
 
+      setIsLoading(false);
     }
   }
-
+  useEffect(() => {
+    handleSubmit();
+  }, [render]);
 
   const handleReactionClick = (reaction) => {
     // no button is active
@@ -128,101 +166,300 @@ function QuestionAns() {
     }
   };
 
- // Handle delete answer
-//  const handleDelete = async (questioId) => {
-//   try {
-//     await axios.delete(`/data/combineddelet/${questionid}`, {
-//       headers: {
-//         Authorization: "Bearer " + token,
-//       },
-//     });
-//     forceUpdate();
-//   } catch (error) {
-//     alert("Failed to delete the answer");
-//     console.log(error);
-//   }
-// };
+  const deleteAnswer = async (answerid) => {
+    console.log("answerid==>", answerid);
+    try {
+      const { data } = await axios.delete(`answers/deleteanswer/${answerid}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
 
+      forceUpdate();
+    } catch (error) {
+      console.error("Error deleting answer: ", error.response || error.message);
+    }
+  };
 
+  //edit
+  const editAnswer = async (answerid, answer) => {
+    setIsEditMode(true);
+    setAnswerIdOnEdit(answerid);
+    answerDom.current.value = answer;
+  };
+  async function updateAnswer(e) {
+    e.preventDefault();
+    const answerValue = answerDom.current.value;
 
+    if (!answerValue) {
+      alert("Please provide all required information");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await axios.post(
+        `/answers/update-answer/${answerIdOnEdit}`,
+        {
+          answer: answerValue,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      alert("Your answer has been updated");
+
+      //empty answer
+      // answerDom.current.value = "";
+      setIsLoading(false);
+      setIsEditMode(false);
+      // setAnswerIdOnEdit(null)
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
+
+// edit question
+
+const editQuestion = async (questionid, title, description) => {
+  setIsEditModeQuestion(true);
+  setQuestionIdOnEdit(questionid);
+  setTittleValue(title);
+  setDescriptionValue(description);
+ 
+};
+
+// update question
+
+useEffect(() => {
+  if (isEditModeQuestion) {
+    titleDom.current.value = titleValue;
+    descriptionDom.current.value = descriptionValue;
+  }
+}, [isEditModeQuestion, titleValue, descriptionValue]);
+
+const updateQuestion = async (e) => {
+  e.preventDefault();
+
+  
+
+  if (!titleValue || !descriptionValue) {
+    alert("Please provide all required information");
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    await axios.post(
+      `/questions/update-question/${questionIdOnEdit}`,
+      {
+        title: titleValue,
+        description: descriptionValue,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+    alert("Your question has been updated");
+
+    // Reset form
+    setTittleValue("");
+    setDescriptionValue("");
+    setIsLoading(false);
+    setIsEditModeQuestion(false);
+    // Refresh question details
+    setDetail({
+      ...details,
+      title: titleValue,
+      description: descriptionValue,
+    });
+  } catch (error) {
+    console.error(error);
+    setIsLoading(false);
+}
+};
 
 
   return (
     <Layout>
       <Animationpage>
-      { isloading ? (<Loader/>):(  
-      <div className={classes.answer_container}>
-        <div className={classes.title}>
-          <h4>Questions title: {details.title}</h4>
-          <h4>Questions description: {details.description}</h4>
-          <h2>
-          <img src={QA} width={45} alt="" /> <span><h4>Answer From The Community</h4></span>
-         
-        </h2>
-        </div>
+        {isloading ? (
+          <Loader />
+        ) : (
+          <div className={classes.answer_container}>
+            <div className={classes.title}>
+              <h4>Questions title: {details.title}</h4>
+              <h4>Questions description: {details.description}</h4>
+              <div onClick={(e) => e.stopPropagation()}>
+              {details?.username == user?.username && <div onClick={(e) => e.stopPropagation()}>
+              <FaTrashAlt
+                onClick={() => deleteQuestions(details.questionid,details.title,details.description)}
+                style={{ cursor: "pointer", color: "red", fontSize: "20px" }}
+              />
+               <MdEdit
+              onClick={() =>
+                editQuestion(
+                  details.questionid,
+                  details.title,
+                  details.description
+                )
+              }
+              style={{ cursor: "pointer", color: "gray", fontSize: "20px" }}
+            />
+              </div>}
+           
+</div>
+{/* update question  */}
+{isEditModeQuestion && (
+        <form onSubmit={updateQuestion} className={classes.form}>
+          <h2 className={classes.form_heading}>Update Your Question</h2>
+          <input
+            ref={titleDom}
+            type="text"
+            size="97"
+            placeholder="Enter title"
+            className={classes.input_field}
+            value={titleValue}
+            onChange={(e) => setTittleValue(e.target.value)}
+            
+          />
+          <textarea
+            ref={descriptionDom}
+            rows="5"
+            cols="90"
+            placeholder="Enter description"
+            className={classes.textarea}
+            value={descriptionValue}
+            onChange={(e) => setDescriptionValue(e.target.value)}
+          ></textarea>
+          <button
+            type="submit"
+            className={classes.submit_button}
+            disabled={isloading}
+          >
+            {isloading ? "Updating..." : "Post Question"}
+          </button>
+        </form>
+)}
 
-       
 
-        <div className={classes.one_question}>
-          <div className={classes.all_answer}>
-            {values.map((value, i) => (
-              <div key={Map.id}>
-                <div className={classes.username}>
+
+
+
+              <h2>
+                <img src={QA} width={45} alt="" />{" "}
+                <span>
+                  <h4>Answer From The Community</h4>
+                </span>
+              </h2>
+            </div>
+
+            <div className={classes.one_question}>
+              <div className={classes.all_answer}>
+                {values.map((value, i) => (
+                  <div key={i}>
+                    <div className={classes.username}>
+                      <div>
+                        <div>
+                          <VscAccount className={classes.icon} size={40} />
+                        </div>
+                        <br />
+                        <div>
+                          <p>{value.username}</p>
+                        </div>
+                        <br />
+                        <div className={classes.icon}>
+                          <SlLike
+                            onClick={() => handleReactionClick("like")}
+                            className={classes.like}
+                          />
+                          <span>{likeCount}</span>
+                          <SlDislike
+                            onClick={() => handleReactionClick("dislike")}
+                            className={classes.dislike}
+                          />
+                          <span>{dislikeCount}</span>
+                          <TbDotsVertical
+                            size={25}
+                            onClick={() => setshowAll(!showAll)}
+                          />
+                          {value?.username == user?.username && (
+                          // {showAll && (
+                            <div
+                              onClick={(e) => e.stopPropagation()}
+                              className={classes.display}
+                            >
+                              <FaTrashAlt
+                                onClick={() => deleteAnswer(value.answerid)}
+                                style={{
+                                  cursor: "pointer",
+                                  color: "red",
+                                  fontSize: "20px",
+                                }}
+                                className={classes.delete}
+                              />
+                              <MdEdit
+                                onClick={() =>
+                                  editAnswer(value.answerid, value.answer)
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  color: "gray",
+                                  fontSize: "20px",
+                                }}
+                                className={classes.edit}
+                              />
+                            </div>
+                          )}
+                          {/* //  )} */}
+                        </div>
+                      </div>
+
+                      <div className={classes.answer}>{value.answer}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className={classes.form}>
+                <form
+                  onSubmit={isEditMode ? updateAnswer : handleSubmit}
+                  action=""
+                >
+                  <div className={classes.public}>
+                    <h3>Answer The Top Question </h3>
+                    <img src={handpointer} alt="" />
+                    <Link to="/all-questions">Go to question page</Link>
+                  </div>
+
                   <div>
-                    
-                  
-                  <div>
-                    <VscAccount className={classes.icon} size={40} /> 
-                     </div>
-                    <br />
-                    <div>
-                    <p>{value.username}</p>
-                    </div>
-                    <br />
-                    <div className={classes.icon}>
-                      <SlLike
-                        onClick={() => handleReactionClick("like")}
-                        className={classes.like}
-                      />
-                      <span>{likeCount}</span>
-                      <SlDislike
-                        onClick={() => handleReactionClick("dislike")}
-                        className={classes.dislike}
-                      />
-                      <span>{dislikeCount}</span>
-                      <FaTrashAlt  onClick={() => handleDelete(value.id)} className={classes.delete} />
-                      <MdEdit className={classes.edit} />
-                    </div>
-                    </div>
-                
-                  <div className={classes.answer}>{value.answer}</div>
-                </div>
+                    <textarea
+                      ref={answerDom}
+                      placeholder="Your Answer.."
+                      className={classes.textarea}
+                    ></textarea>
+                  </div>
 
-
+                  {error && (
+                    <button>
+                      {" "}
+                      {isloading
+                        ? "posting..."
+                        : isEditMode
+                        ? " Update Answer"
+                        : "Post your Answer"}
+                    </button>
+                  )}
+                  <span style={{ color: "blue", padding: "5px" }}>{error}</span>
+                </form>
               </div>
-            ))}
+            </div>
           </div>
-          <div className={classes.form}>
-            <form onSubmit={handleSubmit} action="">
-              <div className={classes.public}>
-                <h3>Answer The Top Question </h3>
-                <img src={handpointer} alt="" />
-                <Link to="/all-questions">Go to question page</Link>
-              </div>
-
-              <div >
-                <textarea
-                  ref={answerDom}
-                  placeholder="Your Answer.."
-                  className={classes.textarea}
-                ></textarea>
-              </div>
-
-             {error &&  <button > Post your Answer</button>}<span style={{color:"blue", padding:"5px"}}>{error}</span>
-            </form>
-          </div>
-        </div>
-      </div>)}
+        )}
       </Animationpage>
     </Layout>
   );

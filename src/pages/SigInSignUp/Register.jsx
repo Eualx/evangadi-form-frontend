@@ -98,7 +98,7 @@ function Register() {
       setTimeout(() => { navigate('/'); window.location.reload(); setProcess(false)}, 2000)
     } catch (error) {
       alert(error?.response?.data?.msg);
-      console.log(error.response.data);
+      console.log(error.response?.data);
     }
   }
 
