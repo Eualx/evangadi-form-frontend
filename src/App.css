@@ -5,8 +5,8 @@
     height: 100%;
     background-color: #F8F8F8;
 } */
-*{
+body{
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
 }

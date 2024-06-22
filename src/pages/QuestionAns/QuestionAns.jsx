@@ -1,11 +1,11 @@
 import { useRef, useState, useEffect, useReducer } from "react";
 import classes from "./QuestionAns.module.css";
 import { Link, useParams,useNavigate } from "react-router-dom";
-import { VscAccount } from "react-icons/vsc";
+import profilepic from "../../assets/img/profile-image.png"
+// import { VscAccount } from "react-icons/vsc";
 import Layout from "../Layout/Layout";
 import axios from "../Axios/axiosConfig";
 import QA from "../../assets/img/icons8-answer-58.png";
-import handpointer from "../../assets/img/icons8-hand-right-50.png";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { SlLike } from "react-icons/sl";
@@ -14,9 +14,11 @@ import Animationpage from "../Animation/Animationpage";
 import Loader from "../../Components/Loader";
 import { useContext } from "react";
 import { AppState } from "../../App";
-import { TbDotsVertical } from "react-icons/tb";
+
+
 
 import Confirmation from './Confirmation'
+
 function QuestionAns() {
   const navigate=useNavigate()
   const { user } = useContext(AppState);
@@ -33,42 +35,22 @@ function QuestionAns() {
   const [isloading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [answerIdOnEdit, setAnswerIdOnEdit] = useState(null);
-  const [showAll, setshowAll] = useState(false);
+  const [annouce, setannounce] = useState(false);
   const [isEditModeQuestion, setIsEditModeQuestion] = useState(false);
   const [questionIdOnEdit, setQuestionIdOnEdit] = useState(null);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
-  // const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+  const [deleteAnswerId, setDeleteAnswerId] = useState(null);
+  const [ale,setAler]=useState(true)
   // const [announce, setAnnounce]=useState('')
   const titleDom = useRef();
   const descriptionDom = useRef();
  
   // {to extract answers from data base}
- 
-    // if (questionid && token) {
-      // setIsLoading(true);
-      // axios
-      //   .get(`/data/combined/${questionid}`, {
-      //     headers: {
-      //       Authorization: "Bearer " + token,
-      //     },
-      //   })
-
-      //   .then((res) => {
-      //     setValues(res.data);
-      //     console.log(res.data);
-      //     setIsLoading(false);
-      //   })
-
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setIsLoading(false);
-      //   });
-    // }
-    
-
+ // get the whole answer
     async function answer() {
       try {
         const respond = await axios
@@ -94,7 +76,7 @@ function QuestionAns() {
   }, [isloading, isEditMode, answerIdOnEdit]);
 
   
-  // {extracting data which are not included in the mapping}
+  // get detail question 
   async function detailQuestion() {
     setIsLoading(true);
     try {
@@ -115,7 +97,7 @@ function QuestionAns() {
 
       useEffect(() => {
         detailQuestion()
-  }, [setDetail]);
+  }, [setDetail ]);
 
   useEffect(() => {
   
@@ -158,6 +140,8 @@ function QuestionAns() {
     handleSubmit();
   }, [render]);
 
+  // to include like and unlike button
+
   const handleReactionClick = (reaction) => {
     // no button is active
     if (activeBtn === "none") {
@@ -178,6 +162,39 @@ function QuestionAns() {
     }
   };
 
+
+  // to include confirmation button while deliting
+
+  const confirmDeleteQuestion = (questionid) => {
+    setDeleteQuestionId(questionid);
+    setShowConfirmModal(true);
+  };
+  const handleConfirmDeleteQuestion = async () => {
+    setShowConfirmModal(false);
+    if (deleteQuestionId) {
+      await deleteQuestions(deleteQuestionId);
+      setDeleteQuestionId(null);
+    }
+  };
+  const handleCancelDelete = () => {
+    setShowConfirmModal(false);
+    setDeleteQuestionId(null);
+    setDeleteAnswerId(null);
+  };
+    
+  const confirmDeleteAnswer = (answerid) => {
+    setDeleteAnswerId(answerid);
+    setShowConfirmModal(true);
+  };
+  const handleConfirmDeleteAnswer = async () => {
+    setShowConfirmModal(false);
+    if (deleteAnswerId) {
+      await deleteAnswer(deleteAnswerId);
+      setDeleteAnswerId(null);
+    }
+  };
+
+// to delete the answer
   const deleteAnswer = async (answerid) => {
     console.log("answerid==>", answerid);
     try {
@@ -187,13 +204,19 @@ function QuestionAns() {
         },
       });
 
+      setNotification("you have deleted your answer")
+      setValues((prevValues) =>
+        prevValues.filter((values) => values.answerid !== answerid)
+    );
+    
+
       forceUpdate();
     } catch (error) {
-      console.error("Error deleting answer: ", error.response || error.message);
+      console.error( error.response);
     }
   };
 
-  //edit
+  // to update and edit answer
   const editAnswer = async (answerid, answer) => {
     setIsEditMode(true);
     setAnswerIdOnEdit(answerid);
@@ -221,7 +244,7 @@ function QuestionAns() {
           },
         }
       );
-      alert("Your answer has been updated");
+      setannounce("Your answer has been updated");
 
       //empty answer
       // answerDom.current.value = "";
@@ -239,7 +262,7 @@ function QuestionAns() {
 const editQuestion = async (questionid, title, description) => {
   setIsEditModeQuestion(true);
   setQuestionIdOnEdit(questionid);
-  setTittleValue(title);
+  setTitleValue(title);
   setDescriptionValue(description);
  
 };
@@ -277,7 +300,7 @@ const updateQuestion = async (e) => {
         },
       }
     );
-    alert("Your question has been updated");
+    setNotification("Your question has been updated");
 
     // Reset form
     setTitleValue("");
@@ -296,43 +319,49 @@ const updateQuestion = async (e) => {
 }
 };
 
-const confirmDeleteQuestion = (questionid) => {
-  setDeleteQuestionId(questionid);
-  setShowConfirmModal(true);
-};
-const handleConfirmDelete = async () => {
-  setShowConfirmModal(false);
-  if (deleteQuestionId) {
-    await deleteQuestions(deleteQuestionId);
-    setDeleteQuestionId(null);
-  }
-};
-const handleCancelDelete = () => {
-  setShowConfirmModal(false);
-  setDeleteQuestionId(null);
-};
-  
   const deleteQuestions = async (questionid) => {
+    setIsLoading(true);
     try {
-           const { data } = await axios.delete(`/questions/delete/${questionid}`, {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }).then((res)=>{
-            detailQuestion();
-          })
+      const { data } = await axios.delete(`/questions/delete/${questionid}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+
+     // Update your state to remove the deleted question
+      setTimeout(() => {
+        setNotification("you have deleted your question ")
+      setDetail((prevQuestions) =>
+        prevQuestions.filter((details) => details.questionid !== questionid)
+      );
+    
+    }, 2000)
       console.log(data);
-      // setNotification("You have deleted your question");
-      // setTimeout(() => {
-        setDetail((prevQuestions) =>
-                prevQuestions.filter((details) => details.questionid !== questionid)
-            );
-            navigate("/",{ replace: true });
-      // }, 2000); // Navigate after 2 seconds
-    }  catch (error) {
+      // Navigate to the home page
+      navigate("/",{ replace: true });
+      setIsLoading(false);
+    } catch (error) {
       console.log(error.response);
+      setIsLoading(false);
     }
   };
+
+  // display box
+
+  const handleClickOutside = (event) => {
+    if (event.target.classList.contains(classes.editQuestion)) {
+      setIsEditModeQuestion(false);
+    }
+  };
+
+  const handleClickOut = (event) => {
+    if (event.target.classList.contains(classes.notification_main)) {
+      setNotification(false);
+    }
+  };
+
+
+
 // Other functions (handleSubmit, updateAnswer, editAnswer, etc.) go here...
   return (
     <Layout>
@@ -341,25 +370,46 @@ const handleCancelDelete = () => {
           <Loader />
         ) : (
           <div className={classes.answer_container}>
-            {showConfirmModal && (
-        <Confirmation 
-          message="Are you sure you want to delete this question?"
-          onConfirm={handleConfirmDelete}
+
+{notification && (
+  <div onClick={ handleClickOut} className={classes.notification_main}>
+      <div className={classes.notification}>{notification}</div>
+  </div>
+      
+      )}
+      {showConfirmModal && (
+        <Confirmation
+          message={
+            deleteQuestionId
+              ? "Are you sure you want to delete this question?"
+              : "Are you sure you want to delete this answer?"
+          }
+          onConfirm={
+            deleteQuestionId
+              ? handleConfirmDeleteQuestion
+              : handleConfirmDeleteAnswer
+          }
           onCancel={handleCancelDelete}
   />
 )}
-            <div className={classes.title}>
-              <h4>Questions title: {details?.title}</h4>
-              <h4>Questions description: {details?.description}</h4>
-              <div onClick={(e) => e.stopPropagation()}>
+
+
+            <div className={classes.top}>
+              <div>
+              <div className={classes.title_Que}><p>Questions title: {details?.title}</p></div>
+              <div className={classes.description}>
+              <p>Questions description: {details?.description}</p> 
+              </div>
+              </div>
+              {/* <div className={classes.icon} onClick={(e) => e.stopPropagation()}> */}
              
-              {details?.username == user?.username && <div onClick={(e) => e.stopPropagation()}>
-              <FaTrashAlt 
-                // onClick={() => deleteQuestions(details.questionid,details.title,details.description)}
+              {details?.username == user?.username && <div className={classes.icon} onClick={(e) => e.stopPropagation()}>
+              <FaTrashAlt size={25}
+                
                 onClick={() => confirmDeleteQuestion(details.questionid)}
                 style={{ cursor: "pointer", color: "red", fontSize: "20px" }}
               />
-               <MdEdit
+               <MdEdit size={25}
               onClick={() =>
                 editQuestion(
                   details.questionid,
@@ -371,85 +421,99 @@ const handleCancelDelete = () => {
             />
               </div>}
            
-</div>
+{/* </div> */}
 {/* update question  */}
-{isEditModeQuestion && (
-        <form onSubmit={updateQuestion} className={classes.form}>
-          <h2 className={classes.form_heading}>Update Your Question</h2>
-          <input
-            ref={titleDom}
-            type="text"
-            size="97"
-            placeholder="Enter title"
-            className={classes.input_field}
-            value={titleValue}
-            onChange={(e) => setTitleValue(e.target.value)}
-            
-          />
-          <textarea
-            ref={descriptionDom}
-            rows="5"
-            cols="90"
-            placeholder="Enter description"
-            className={classes.textarea}
-            value={descriptionValue}
-            onChange={(e) => setDescriptionValue(e.target.value)}
-          ></textarea>
-          <button
-            type="submit"
-            className={classes.submit_button}
-            disabled={isloading}
-          >
-            {isloading ? "Updating..." : "Post Question"}
-          </button>
-        </form>
+
+ 
+            </div>
+
+            {isEditModeQuestion && (
+  <div className={classes.editQuestion} onClick={handleClickOutside}> <form onSubmit={updateQuestion} className={classes.formedit}>
+  <h2 className={classes.form_title}>Update Your Question</h2>
+  <input
+    ref={titleDom}
+    type="text"
+    placeholder="Title"
+    className={classes.title}
+    value={titleValue}
+    onChange={(e) => setTitleValue(e.target.value)}
+    
+  />
+  <textarea
+    ref={descriptionDom}
+    placeholder="Enter description"
+    className={classes.Question_Des}
+    value={descriptionValue}
+    onChange={(e) => setDescriptionValue(e.target.value)}
+  ></textarea>
+  <button
+    type="submit"
+    className={classes.button}
+    disabled={isloading}
+  >
+
+    {isloading ? "Updating..." : "Post Question"}
+  </button>
+</form></div>
+        
 )}
 
-              <h2>
-                <img src={QA} width={45} alt="" />{" "}
-                <span>
+
+
+            <div className={classes.community}>
+            <div>
+            <img src={QA} width={45} alt="" />
+            </div>
+              
+                <div>
                   <h4>Answer From The Community</h4>
-                </span>
-              </h2>
+                </div>
+              
             </div>
 
             <div className={classes.one_question}>
               <div className={classes.all_answer}>
                 {values.map((value, i) => (
                   <div key={i}>
-                    <div className={classes.username}>
+                    <div className={classes.eachanswer}>
                       <div>
-                        <div>
-                          <VscAccount className={classes.icon} size={40} />
+                        <div className={classes.Profileicon}>
+                          {/* <VscAccount  size={60} /> */}
+                          <img src={profilepic} width={100}  alt="" />
                         </div>
-                        <br />
-                        <div>
-                          <p>{value.username}</p>
+                       
+                        <div className={classes.username}>
+                          <p>{value?.username}</p>
+                          
                         </div>
-                        <br />
-                        <div className={classes.icon}>
-                          <SlLike
+                        
+                        <div className={classes.Answericon}>
+                          <div><SlLike size={25}
                             onClick={() => handleReactionClick("like")}
                             className={classes.like}
                           />
-                          <span>{likeCount}</span>
-                          <SlDislike
+                          <span>{likeCount}</span></div>
+                          
+                          <div><SlDislike size={25}
                             onClick={() => handleReactionClick("dislike")}
                             className={classes.dislike}
-                          />
-                          <span>{dislikeCount}</span>
-                          <TbDotsVertical
-                            size={25}
-                            onClick={() => setshowAll(!showAll)}
-                          />
+                          /> 
+
+                                <span>{dislikeCount}</span>
+
+                          </div>
+                          
+                          
+                         
                           {value?.username == user?.username && (
                           // {showAll && (
                             <div
                               onClick={(e) => e.stopPropagation()}
                               className={classes.display}
                             >
-                              <FaTrashAlt
-                               onClick={() => confirmDeleteQuestion(value.answer)}
+                              <div>
+                              <FaTrashAlt size={25}
+                               onClick={() => confirmDeleteAnswer(value?.answerid)}
                                 style={{
                                   cursor: "pointer",
                                   color: "red",
@@ -457,7 +521,9 @@ const handleCancelDelete = () => {
                                 }}
                                 className={classes.delete}
                               />
-                              <MdEdit
+                              </div>
+                             
+                              <div> <MdEdit size={25}
                                 onClick={() =>
                                   editAnswer(value.answerid, value.answer)
                                 }
@@ -467,27 +533,32 @@ const handleCancelDelete = () => {
                                   fontSize: "20px",
                                 }}
                                 className={classes.edit}
-                              />
+                              /></div>
+                             
                             </div>
                           )}
                           {/* //  )} */}
                         </div>
                       </div>
 
-                      <div className={classes.answer}>{value.answer}</div>
+                      <div className={classes.answer}>{value?.answer}</div>
                     </div>
                   </div>
                 ))}
               </div>
               <div className={classes.form}>
+
                 <form
                   onSubmit={isEditMode ? updateAnswer : handleSubmit}
                   action=""
                 >
                   <div className={classes.public}>
-                    <h3>Answer The Top Question </h3>
-                    <img src={handpointer} alt="" />
-                    <Link to="/all-questions">Go to question page</Link>
+                    <div > <h3>{isEditMode
+                        ? " Update Answer"
+                        : "Answer The Top Question"} </h3></div>
+                   <div className={classes.link}><Link to="/all-questions">Go to question page</Link></div>
+                    
+                    
                   </div>
 
                   <div>
