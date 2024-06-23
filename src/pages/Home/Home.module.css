@@ -145,8 +145,12 @@ z-index: 11;
 
 
 @media screen and (max-width:768px){
+    .top_container{
+        width: 500px;
+      
+    }
     .top_container button{
-    width: 150px;
+    width: 200px;
     }
     .one_question{
         display: flex;

@@ -71,12 +71,13 @@
 }
 .title_Que{
   font-size: 20px;
-  padding: 10px;
+  padding-left: 10px;
+  font-weight: bold;
 }
 .description{
   font-size: 20px;
   margin-left: 5px;
-  padding: 10px;
+  padding-left: 10px;
 }
 .top{
   display: flex;
@@ -239,4 +240,25 @@ h2{
     .title {
       margin-left: 20px;
     }
+    .eachanswer{
+      display: flex;
+      gap: 30px;
+      margin: 0px 30px 0px;
+      padding: 20px 40px;
+      background-color: #FAFAFA;
+      border-top: 2px solid #F1F1F1;
+     padding: 10px;
+     
+    }
+    .top{
+  display: flex;
+  margin: 0px 20px 0px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.community{
+  margin: 10px 20px 0px;
+  padding: 20px;
+ gap: 20px;
+}
+
   }

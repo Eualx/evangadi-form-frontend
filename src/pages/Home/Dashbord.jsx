@@ -137,7 +137,7 @@ useEffect(() => {
               onMouseLeave={() => setGreeting(false)}
             >
               <button type="submit">
-                <Link to="/all-questions">Do yo have questions?</Link>
+                <Link to="/all-questions">Do you have questions?</Link>
               </button>
               <div className={classes.welcome_message}>
                 <h2>Welcome: Dear {user?.username}</h2>

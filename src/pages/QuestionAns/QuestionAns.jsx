@@ -14,9 +14,6 @@ import Animationpage from "../Animation/Animationpage";
 import Loader from "../../Components/Loader";
 import { useContext } from "react";
 import { AppState } from "../../App";
-
-
-
 import Confirmation from './Confirmation'
 
 function QuestionAns() {
@@ -142,23 +139,56 @@ function QuestionAns() {
 
   // to include like and unlike button
 
-  const handleReactionClick = (reaction) => {
-    // no button is active
-    if (activeBtn === "none") {
-      if (reaction === "like") {
-        setLikeCount(likeCount + 1);
-        setActiveBtn("like");
-      } else if (reaction === "dislike") {
-        setDislikeCount(dislikeCount + 1);
-        setActiveBtn("dislike");
+  // const handleReactionClick = (reaction) => {
+  //   // no button is active
+  //   if (activeBtn === "none") {
+  //     if (reaction === "like") {
+  //       setLikeCount(likeCount + 1);
+  //       setActiveBtn("like");
+  //     } else if (reaction === "dislike") {
+  //       setDislikeCount(dislikeCount + 1);
+  //       setActiveBtn("dislike");
+  //     }
+  //   } else if (activeBtn === reaction) {
+  //     if (reaction === "like") {
+  //       setLikeCount(likeCount - 1);
+  //     } else if (reaction === "dislike") {
+  //       setDislikeCount(dislikeCount - 1);
+  //     }
+  //     setActiveBtn("none");
+  //   }
+  // };
+
+
+  const handleReactionClick = (answerid, reaction) => {
+    if (!activeBtn[answerid]) {
+      // no button is active
+      if (reaction === 'like') {
+        setLikeCount({ ...likeCount, [answerid]: (likeCount[answerid] || 0) + 1 });
+        setActiveBtn({ ...activeBtn, [answerid]: 'like' });
+      } else if (reaction === 'dislike') {
+        setDislikeCount({ ...dislikeCount, [answerid]: (dislikeCount[answerid] || 0) + 1 });
+        setActiveBtn({ ...activeBtn, [answerid]: 'dislike' });
       }
-    } else if (activeBtn === reaction) {
-      if (reaction === "like") {
-        setLikeCount(likeCount - 1);
-      } else if (reaction === "dislike") {
-        setDislikeCount(dislikeCount - 1);
+    } else if (activeBtn[answerid] === reaction) {
+      // same button clicked again, reset
+      if (reaction === 'like') {
+        setLikeCount({ ...likeCount, [answerid]: (likeCount[answerid] || 0) - 1 });
+      } else if (reaction === 'dislike') {
+        setDislikeCount({ ...dislikeCount, [answerid]: (dislikeCount[answerid] || 0) - 1 });
       }
-      setActiveBtn("none");
+      setActiveBtn({ ...activeBtn, [answerid]: 'none' });
+    } else {
+      // different button clicked
+      if (reaction === 'like') {
+        setLikeCount({ ...likeCount, [answerid]: (likeCount[answerid] || 0) + 1 });
+        setDislikeCount({ ...dislikeCount, [answerid]: (dislikeCount[answerid] || 0) - 1 });
+        setActiveBtn({ ...activeBtn, [answerid]: 'like' });
+      } else if (reaction === 'dislike') {
+        setDislikeCount({ ...dislikeCount, [answerid]: (dislikeCount[answerid] || 0) + 1 });
+        setLikeCount({ ...likeCount, [answerid]: (likeCount[answerid] || 0) - 1 });
+        setActiveBtn({ ...activeBtn, [answerid]: 'dislike' });
+      }
     }
   };
 
@@ -489,17 +519,17 @@ const updateQuestion = async (e) => {
                         
                         <div className={classes.Answericon}>
                           <div><SlLike size={25}
-                            onClick={() => handleReactionClick("like")}
+                            onClick={() => handleReactionClick(value?.answerid,"like")}
                             className={classes.like}
                           />
-                          <span>{likeCount}</span></div>
+                          <span>{likeCount[value?.answerid]||0}</span></div>
                           
                           <div><SlDislike size={25}
-                            onClick={() => handleReactionClick("dislike")}
+                            onClick={() => handleReactionClick(value?.answerid,"dislike")}
                             className={classes.dislike}
                           /> 
 
-                                <span>{dislikeCount}</span>
+                                <span>{dislikeCount[value?.answerid]||0}</span>
 
                           </div>
                           
