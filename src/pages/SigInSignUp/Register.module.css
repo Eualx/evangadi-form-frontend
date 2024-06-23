@@ -21,19 +21,19 @@
 
 .left_Signup_container p {
   font-size: 15px;
-  margin: 10px;
+  margin: 5px;
 }
 .left_Signup_container a {
   color: #fba303;
-  font-size: 16px;
+  font-size: 18px;
 }
 .left_Signup_container form {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  height: 420px;
+  height: 450px;
+  padding: 30px 20px 0px;
   margin-top: 70px;
   margin-bottom: 70px;
-  padding: 30px 20px 0px;
   color: gray;
   text-decoration: none;
   position: relative;
@@ -42,8 +42,14 @@
 .left_Signup_container label {
   position: absolute;
   right: 60px;
-  padding: 10px;
+  padding: 15px 0px 5px;
   color: #717479;
+}
+.left_Signup_container h4{
+  margin-top: 5px;
+  margin-bottom: 2px;
+  font-size: 18px;
+ color: black;
 }
 label:hover {
   color: #fba303;
@@ -51,7 +57,16 @@ label:hover {
 .left_Signup_container input {
   width: 450px;
   padding: 12px;
-  outline-color: #fba303;
+  font-size: 18px;
+  outline: none;
+  background-color: #E8F0FE;
+  border: 2px solid #E5E5E5;
+  border-radius: 6px;
+  /* outline-color: #fba303; */
+}
+
+.left_Signup_container input:focus {
+  border-bottom-color: #FBA303; /* Change to your desired color on focus */
 }
 .first_last_name input {
   width: 210px;
@@ -67,11 +82,11 @@ button {
 .left_Signup_container button {
   background-color: #0b5ed7;
   padding: 12px;
-  width: 400px;
+  width: 97%;
   border-radius: 3px;
   margin-top: 10px;
-  margin-bottom: 10px;
   border: none;
+  font-size: 20px;
 }
 .right_Signup_container {
   margin-left: 20px;
@@ -88,7 +103,7 @@ button {
 .right_Signup_container button {
   background-color: #fba303;
   margin-top: 20px;
-  padding: 7px 30px;
+  padding: 15px 30px;
   width: 200px;
   border: none;
   border-radius: 3px;
@@ -96,7 +111,6 @@ button {
 .right_Signup_container p {
 font-size: 18px;
 }
-
 .Login_container{
   display: flex;
   width: 960px;
@@ -109,8 +123,9 @@ font-size: 18px;
   padding-right: 10px;
 }
 .left_Login_container h4{
-  margin-top: 60px;
+  margin-top: 50px;
   color: black;
+  font-size: 20px;
 }
 .left_Login_container p{
   font-size: 15px;
@@ -118,12 +133,12 @@ font-size: 18px;
 }
 .left_Login_container a{
   color: #FBA303;
-  font-size: 15px;
+  font-size: 18px;
 }
 .left_Login_container form{
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  height: 420px;
+  height: 450px;
   padding: 30px 20px 0px;
   margin-top: 70px;
   margin-bottom: 70px;
@@ -135,27 +150,35 @@ font-size: 18px;
 .left_Login_container label{
   position: absolute;
  right:40px ;
- padding:10px;
+ padding:15px 10px;
  color: #717479;
 }
 label:hover{
   color: #FBA303;
 }
 .left_Login_container input{
-  width: 450px;
-  padding: 12px;
+  width:90%;
+  padding: 15px;
+  font-size: 18px;
+  outline: none;
+  background-color: #E8F0FE;
+  border: 2px solid #E5E5E5;
+  border-radius: 6px;
  
-  
+}
+.left_Login_container input:focus {
+  border-bottom-color: #FBA303; /* Change to your desired color on focus */
 }
 .left_Login_container button{
-  width: 350px;
-  padding: 12px ;
-  border-radius: 3px  ;
+  width: 97%;
+  padding: 15px 0px 15px ;
+  border-radius: 5px  ;
   margin-top: 15px;
   margin-bottom: 10px;
   border: none;
   background-color:#0b5ed7; ;
   color: white;
+  font-size: 18px;
 }
 @media screen and (max-width:760px){
   

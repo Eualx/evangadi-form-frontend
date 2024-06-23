@@ -133,9 +133,9 @@ function Register() {
                   <label htmlFor="">
                     {" "}
                     {!visible ? (
-                      <FaRegEyeSlash onClick={handleVisblity} />
+                      <FaRegEyeSlash size={20}  onClick={handleVisblity} />
                     ) : (
-                      <FaEye onClick={handleVisblity} />
+                      <FaEye size={20}  onClick={handleVisblity} />
                     )}
                   </label>
                 </div>
@@ -146,7 +146,7 @@ function Register() {
                   Create an account?
                 </Link>
 <br />
-                <Link to=""> Forget password?</Link>
+                {/* <Link to=""> Forget password?</Link> */}
               </form>
             </div>
           ) : ( 
@@ -204,9 +204,9 @@ function Register() {
                   <label htmlFor="">
                     {" "}
                     {!visible ? (
-                      <FaRegEyeSlash onClick={handleVisblity} />
+                      <FaRegEyeSlash size={20} onClick={handleVisblity} />
                     ) : (
-                      <FaEye onClick={handleVisblity} />
+                      <FaEye size={20}  onClick={handleVisblity} />
                     )}
                   </label>
                 </div>

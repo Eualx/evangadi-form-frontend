@@ -174,21 +174,16 @@ useEffect(() => {
           type="text"
           value={val}
           onChange={handleInputChange}
-          placeholder="Search for a question..."
+          placeholder="Search questions..."
           className={classes.search_input}
         />
-
-            </form>
+   </form>
             </div>
             <div>
-              
-            
-            <IoSearchOutline onClick={handleSubmit} size={40}
+            <IoSearchOutline onClick={handleSubmit} size={30}
         className={classes.search_button}/>
             </div>
             </div>
-
-
             {searchResults.length > 0 ? (
 
 currentItems.map((value, i) => (

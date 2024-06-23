@@ -6,9 +6,9 @@
     margin-right: 200px;
 }
 .top_container button{
-padding: 20px;
+padding: 5px;
 color: white;
-font-size: 15px;
+font-size: 17px;
 width: 200px;
 background-color: #2368de;
 border: none;
@@ -42,13 +42,13 @@ border-radius: 6px;
 .arrow{
     position: absolute;
    border: none; 
-    right: 100px;
+    right:40px;
     font-weight: bolder;
     size: 100px;  
 }
 .button{
     display: flex;
-    gap: 15px;
+    gap: 25px;
     padding: 10px;
 }
 .profile{
@@ -95,14 +95,16 @@ z-index: 11;
     border: 4px solid #F1F1F1;
     margin: 10px 0px 10px 200px ;
     padding-right:300px;
+
 }
 .search_button {
     /* background-color: #007bff; */
     border: none;
-    padding: 10px 20px;
+    padding: 20px 15px;
     cursor: pointer;
-  margin-left: -70px;
-    
+    margin-left: -60px;
+    color: #2368de;
+  
   }
   .search{
     display: flex;

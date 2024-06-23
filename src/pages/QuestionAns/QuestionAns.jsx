@@ -564,7 +564,7 @@ const updateQuestion = async (e) => {
                   <div>
                     <textarea
                       ref={answerDom}
-                      placeholder="Your Answer.."
+                      placeholder="Your Answer"
                       className={classes.textarea}
                     ></textarea>
                   </div>
@@ -579,7 +579,7 @@ const updateQuestion = async (e) => {
                         : "Post your Answer"}
                     </button>
                   )}
-                  <span style={{ color: "blue", padding: "5px" }}>{error}</span>
+                  <span style={{ color: "red", padding: "5px" }}>{error}</span>
                 </form>
               </div>
             </div>
