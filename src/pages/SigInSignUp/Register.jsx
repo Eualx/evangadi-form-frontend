@@ -5,10 +5,11 @@ import classes from "./Register.module.css";
 import { FaEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Layout from "../Layout/Layout";
-
+import Loadertwo from "../../Components/Loadertwo";
 function Register() {
 
-
+// loading
+const [isloading, setIsLoading] = useState(false);
 
   // error
   const [error, setError] = useState("");
@@ -58,6 +59,7 @@ function Register() {
 
 
     try {
+      setIsLoading(true)
       await axios.post("/users/register", {
         username: usernamevalue,
         firstname: firstnamevalue,
@@ -65,11 +67,11 @@ function Register() {
         email: emailvalue,
         password: passwordvalue,
       });
-     
+      setIsLoading(false)
       setRegister(!register);
     } catch (error) {
-      // alert("something went wrong");
-
+      setError("something went wrong");
+      setIsLoading(false)
       console.log(error.response);
     }
   }
@@ -87,6 +89,7 @@ function Register() {
     }
 
     try {
+      setIsLoading(true)
       const { data } = await axios.post("/users/login", {
         email: emailvalue,
         password: passwordvalue,
@@ -95,15 +98,18 @@ function Register() {
       localStorage.setItem("token", data.token);
       console.log(data);
       // navigate("/");
+      setIsLoading(false)
       setTimeout(() => { navigate('/'); window.location.reload(); setProcess(false)}, 2000)
     } catch (error) {
       alert(error?.response?.data?.msg);
       console.log(error.response?.data);
+      setIsLoading(false)
     }
   }
 
   return (
     <Layout>
+      
       <section className={classes.Loginsign}>
         <div className={classes.Signup_container}>
           {register ? (
@@ -145,13 +151,18 @@ function Register() {
                   {" "}
                   Create an account?
                 </Link>
+                {/* {isloading && <Loadertwo />}  */}
 <br />
                 {/* <Link to=""> Forget password?</Link> */}
               </form>
             </div>
           ) : ( 
+
+            
             <div className={classes.left_Signup_container}>
+              
               <form onSubmit={handleSubmit} action="">
+              {/* {isloading && <Loadertwo />}  */}
                 <h4>Join the network</h4>
                 <p>
                   Already have an account?{" "}

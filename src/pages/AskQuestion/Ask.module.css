@@ -25,17 +25,16 @@
     padding: 30px 20px 0px;
     color: black;
     text-decoration: none;
-    background-color: #FAFAFA;
+    background-color: #ffffff;
     margin: auto;
     border-radius: 15px;
 }
-
-
 
 .public {
     margin-left: 120px;
 }
 .public a{
+    margin-top: 5px;
     margin-left: 195px;
 margin-bottom: 20px;
 font-size: larger;
@@ -48,7 +47,7 @@ color: #0B5ED7;
 .title textarea{
     width: 810px;
     height: 45px;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-left: 25px;
     padding: 5px 5px 5px;
     font-size: 18px;
@@ -63,7 +62,7 @@ color: #0B5ED7;
 .Question_Des textarea{
     font-size: 20px;
     width: 810px;
-    height: 250px;
+    height: 220px;
     padding: 15px;
     margin-left:25px ;
     margin-bottom: 40px;

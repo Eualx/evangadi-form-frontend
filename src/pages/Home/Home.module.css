@@ -24,9 +24,9 @@ border-radius: 6px;
     z-index: 10;
     font-size: 20px;
 }
-.one_question:hover{
+/* .one_question:hover{
     transform: scale(1.06);
-}
+} */
 
 .title{
     display: flex;
