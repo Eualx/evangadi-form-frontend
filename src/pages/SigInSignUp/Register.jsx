@@ -101,7 +101,7 @@ const [isloading, setIsLoading] = useState(false);
       setIsLoading(false)
       setTimeout(() => { navigate('/'); window.location.reload(); setProcess(false)}, 2000)
     } catch (error) {
-      alert(error?.response?.data?.msg);
+      setError(error?.response?.data?.msg);
       console.log(error.response?.data);
       setIsLoading(false)
     }
